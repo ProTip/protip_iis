@@ -29,6 +29,7 @@ attribute :host_header, :kind_of => String, :default => nil
 attribute :bindings, :kind_of => String, :default => nil
 attribute :application_pool, :kind_of => String, :default => nil
 attribute :options, :kind_of => String, :default => ''
+attribute :properties, :kind_of => Hash, :default => {}
 
 attr_accessor :exists, :running
 

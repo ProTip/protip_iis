@@ -58,6 +58,7 @@ action :config do
   if @new_resource.port
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
+    cmd << properties_to_parameters(@new_resource.properties)
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
@@ -156,4 +157,10 @@ end
 
 def site_identifier
   @new_resource.host_header || @new_resource.site_name
+end
+
+def properties_to_parameters( properties )
+  parameters = ''
+  properties.each { |property, value| parameters << " /#{property}:#{value}" }
+  parameters
 end

@@ -29,6 +29,9 @@ action :add do
   cmd = "#{appcmd} add apppool /name:\"#{@new_resource.pool_name}\""
   cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}" if @new_resource.runtime_version
   cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
+  ### Added by Greg Zapp
+  cmd << properties_to_parameters(@new_resource.properties)
+  ###
   Chef::Log.debug(cmd)
   shell_out!(cmd)
   @new_resource.updated_by_last_action(true)
@@ -39,8 +42,15 @@ action :add do
 end
 
 action :config do
-  cmd = "#{appcmd} set config /section:applicationPools "
-  cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
+  ### Added by Greg Zapp
+  cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+  cmd << properties_to_parameters(@new_resource.properties)
+  ###
+
+  ### Commented by Greg Zapp
+  #cmd = "#{appcmd} set config /section:applicationPools "
+  #cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
+  ###
   Chef::Log.debug(cmd)
   shell_out!(cmd)
   unless @new_resource.private_mem.nil?
@@ -164,4 +174,10 @@ end
 
 def site_identifier
   @new_resource.pool_name
+end
+
+def properties_to_parameters( properties )
+  parameters = ''
+  properties.each { |property, value| parameters << " /#{property}:#{value}" }
+  parameters
 end

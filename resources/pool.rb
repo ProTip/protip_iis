@@ -32,6 +32,7 @@ attribute :max_proc, :kind_of => Integer
 attribute :thirty_two_bit, :kind_of => Symbol
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
+attribute :properties, :kind_of => Hash, :default => {}
 
 attr_accessor :exists, :running
 
