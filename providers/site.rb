@@ -61,7 +61,14 @@ action :config do
     cmd << properties_to_parameters(@new_resource.properties)
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+  else
+    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    cmd << " /bindings:#{@new_resource.bindings}" if @new_resource.bindings
+    cmd << properties_to_parameters(@new_resource.properties)
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
   end
+
 
   if @new_resource.path
     cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
