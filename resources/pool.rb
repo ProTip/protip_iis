@@ -32,11 +32,20 @@ attribute :max_proc, :kind_of => Integer
 attribute :thirty_two_bit, :kind_of => Symbol
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
-attribute :properties, :kind_of => Hash, :default => {}
+#attribute :properties, :kind_of => [ Hash, String ], :default => ''
 
 attr_accessor :exists, :running
 
 def initialize(*args)
   super
   @action = :add
+end
+
+def properties( arg=nil )
+  if arg.is_a?(Hash)
+    parameters = ''
+    arg.each { |property, value| parameters << " /#{property}:#{value}" }
+    arg = parameters
+  end
+  set_or_return(:properties, arg, :kind_of => [ String, Hash ])
 end
